@@ -1,0 +1,147 @@
+---
+title: "Prediction using Supervised ML"
+author: "Aditya Dawn"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#### **Objective of the Task**  
+  
+This was a task with Simple Linear Regression Equation. Here, we were asked to predict the score of a student if he studies for 9.25 hours per day.
+  
+  
+  
+##### *Tools used*  
+  
+* R for building the linear model.
+* R Markdown for making this presentation.
+  
+  
+  
+#### **What is Simple Linear Regression?**  
+
+Simple Linear Regression is a technique to find the association between two variables (a dependent variable and an independent variable). It is a kind of Supervised Learning function to build a model and predict the value of the dependent variable based on new value of the independent variable.  
+  
+  
+  
+#### **Mathematical Relation**  
+  
+The mathematical equation can be generalised as follows :
+$$y = \beta_0 + \beta_1*x$$  
+where,  
+"y" is the dependent variable  
+"x" is the independent variable  
+"$\beta_0$ is the Intercept  
+"$\beta_1$" is the Regression Coefficient  
+  *Intercept is the value of the dependent variable when the value of the independent variable is 0.*  
+  *Regression Coefficient is the effect of independent variable on the estimation of dependent variable's value.*  
+  Here, we have to estimate the values of $\beta_0$ and $\beta_1$.  
+    
+    
+    
+#### **Importing Data**  
+
+Let us import the data from the given link in the task slide.
+```{r echo=TRUE}
+df <- read.csv(url("http://bit.ly/w-data"))
+```
+
+
+
+#### **Structure of the data** 
+```{r echo=TRUE}
+str(df)
+dim(df)
+```
+Clearly, the data has 2 features with 25 observations in each of them.  
+
+
+#### **Nature of the given Data**
+```{r echo=TRUE}
+typeof(df$Hours)
+typeof(df$Scores)
+```
+So, as shown by the output :  
+
+* The feature "Hours" consists of double characters.
+* The feature "Scores" consists of integer characters.  
+
+
+
+#### **Finding Missing Values (if any)**
+```{r echo=TRUE}
+summary(df)
+```
+So, it is clear that, there are no missing observations in the data.  
+
+
+
+#### **Visual Representation**
+Now, let us look at a visual representation of the data.  
+```{r echo=TRUE}
+library(ggplot2)
+library(ggExtra)
+ggMarginal( ggplot( df, aes( x=Hours,y=Scores)) +
+            geom_point( color = 'red' ,size = 3) +
+            labs ( title = '\nScatter Plot') +
+            theme(legend.position="none"), 
+            type="boxplot"
+           )
+```
+##### **Observations :-**  
+ 
+ * There are no outliers as shown by the marginal  boxplots of the features.
+ * There is a correlation between *Hours* and *Scores* as it is clear from the plot that, with increase in the *Hours* the *Scores* increases  
+
+##### **Correlation Coefficient**  
+The above analysis can be verified by calculating the correlation coefficient between *Scores* and *Hours*.
+```{r echo=TRUE}
+cor(df$Hours,df$Scores)
+```
+The above output confirms the high positive  correlation between the two variables.  
+
+#### **Creation and Interpretation of the model** :  
+Here, we have to predict the Score depending on the Hours of study. So clearly, *Scores* is the dependent variable and *Hours* is the independent variable.  
+
+##### **Model**  
+```{r echo=TRUE}
+simple_model <- lm(Scores~Hours, data = df)
+```
+Now, we can get $\beta_0$ and $\beta_1$ created by the above model by:  
+```{r echo=TRUE}
+simple_model
+```
+Clearly,  
+$\beta_0$ = 2.484  
+$\beta_1$ = 9.776  
+
+##### **Interpretation**  
+```{r echo=TRUE}
+summary(simple_model)
+```
+* The '***' at the end of the Hours in the above output shows that the independent variable has a significant impact on the dependent variable, Scores.
+* *Multiple R-squared:  0.9529* means, nearly 95% of the variance in the values of Scores is explained by this simple model.
+* *p-value: < 2.2e-16* is less than 0.05 and it shows that the model is of high significance.  
+
+So, our model is :
+$$y = 2.484 + 9.776*x$$ 
+
+##### **Visual Representation of the Model**
+```{r echo=TRUE}
+ggplot(df , aes( x = Hours, y = Scores)) +
+geom_point(color = 'red' , size = 3) +
+labs (title = '\nSimple Linear Regression') +
+geom_smooth(method='lm', formula= y~x)
+```
+
+
+
+
+#### **Prediction**
+So, if a student studies for 9.25 hrs/day, then according the created model, the predicted Score of that student will be 92.912 as shown below :  
+```{r echo=TRUE}
+2.484 + 9.776*9.25
+```
