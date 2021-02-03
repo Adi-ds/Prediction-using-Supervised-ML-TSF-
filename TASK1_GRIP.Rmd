@@ -91,6 +91,7 @@ ggMarginal( ggplot( df, aes( x=Hours,y=Scores)) +
             type="boxplot"
            )
 ```
+
 ##### **Observations :-**  
  
  * There are no outliers as shown by the marginal  boxplots of the features.
